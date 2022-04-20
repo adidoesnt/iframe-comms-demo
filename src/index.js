@@ -22,7 +22,9 @@ function setMainContainerStyle(mainContainerElement) {
 function initialiseIframeContainer(mainContainerElement) {
     const iframeContainer = document.createElement('iframe');
     iframeContainer.setAttribute('class', 'iframeContainer');
-    iframeContainer.setAttribute('src', config['iframe-settings']['source']);
+    const source = config['iframe-settings']['source'] ? 
+        config['iframe-settings']['source'] : '../dist/subpage.html';
+    iframeContainer.setAttribute('src', source);
     const style = convertStyles(config['iframe-settings']['style']);
     iframeContainer.setAttribute('style', style);
     mainContainerElement.appendChild(iframeContainer);
@@ -47,38 +49,46 @@ function setMessageContainerStyle(messagePrinterContainer, messageContentContain
     messagePrinterContainer.style.alignItems = 'center';
     messagePrinterContainer.style.justifyContent = 'center';
     messagePrinterContainer.style.top = '0px';
-    messagePrinterContainer.style.outline = 'groove 2px';
+    messagePrinterContainer.style.outline = 'groove 3px';
 
     messageContentContainer.style.width = config['iframe-settings']['style']['width'];
     messageContentContainer.style.textAlign = 'center';
 }
 
 function setMessageEventListener() {
+    const messageContainer = document.querySelector('.messagePrinterContainer');
+    const messageContentContainer = messageContainer.querySelector('.message-content');
+    const iframeContainer = document.querySelector('.iframeContainer');
     window.addEventListener('message', function(event){
         if (event.data == 'messageFromIframe') {
-            console.log('Message from iFrame received!');
-        } else if (event.data == 'messageToIframe') {
-            console.log('Message to iFrame received!');
+            messageContentContainer.innerHTML = 'Message received by main container!';
+        }
+    });
+
+    iframeContainer.contentWindow.addEventListener('message', function(event){
+        if (event.data == 'messageToIframe') {
+            messageContentContainer.innerHTML = 'Message received by iFrame!';
         }
     });
 }
 
 function sendMessageFromIframe() {
-    window.top.postMessage('messageFromIframe', '*');
+    window.top.postMessage('messageFromIframe', 'http://localhost:8080/dist/');
 }
 
 function sendMessageToIframe(iframeContainer) {
-    iframeContainer.contentWindow.postMessage('messageToIframe', '*');
+    iframeContainer.contentWindow.postMessage('messageToIframe', 'http://localhost:8080/dist/');
 }
 
 function testFlow(iframeContainer) {
     setMessageEventListener();
-    setTimeout(() => {
+    const messageContainer = document.querySelector('.messagePrinterContainer');
+    messageContainer.addEventListener('click', (event) => {
         sendMessageToIframe(iframeContainer);
-        setTimeout(() => { 
-            sendMessageFromIframe(iframeContainer) 
-        }, 2000);
-    }, 2000);
+    });
+    iframeContainer.addEventListener('click', (event) => {
+        sendMessageFromIframe(iframeContainer);
+    });
 }
 
 init();

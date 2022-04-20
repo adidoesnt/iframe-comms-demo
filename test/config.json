@@ -1,9 +1,9 @@
 {
     "iframe-settings": {
-        "source": "https://www.google.com/search?igu=1",
         "style": {
             "height": "700px",
-            "width": "1000px"
+            "width": "1000px",
+            "outline": "groove 2px"
         }
     }
 }
