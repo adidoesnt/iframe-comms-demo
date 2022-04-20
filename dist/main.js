@@ -26,7 +26,29 @@ eval("/* module decorator */ module = __webpack_require__.nmd(module);\nvar __WE
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! lodash */ \"./node_modules/lodash/lodash.js\");\n/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_0__);\n\n\nfunction init() {\n    const mainContainerElement = document.createElement('div');\n    mainContainerElement.setAttribute('class', 'main-container');\n    document.body.appendChild(mainContainerElement);\n}\n\ninit();\n\n//# sourceURL=webpack://iframe-experiments/./src/index.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! lodash */ \"./node_modules/lodash/lodash.js\");\n/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var _test_config_json__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../test/config.json */ \"./test/config.json\");\n/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utils */ \"./src/utils.js\");\n\n\n\n\nfunction init() {\n    const mainContainerElement = document.createElement('div');\n    mainContainerElement.setAttribute('class', 'main-container');\n    setMainContainerStyle(mainContainerElement)\n    document.body.appendChild(mainContainerElement);\n    initialiseIframeContainer(mainContainerElement);\n}\n\nfunction setMainContainerStyle(mainContainerElement) {\n    mainContainerElement.style.position = 'absolute';\n    mainContainerElement.style.width = '100%';\n    mainContainerElement.style.height = '100%';\n    mainContainerElement.style.display = 'flex';\n    mainContainerElement.style.alignItems = 'center';\n    mainContainerElement.style.justifyContent = 'center';\n}\n\nfunction initialiseIframeContainer(mainContainerElement) {\n    const iframeContainer = document.createElement('iframe');\n    iframeContainer.setAttribute('class', 'iframeContainer');\n    iframeContainer.setAttribute('src', _test_config_json__WEBPACK_IMPORTED_MODULE_1__[\"iframe-settings\"].source);\n    const style = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.convertStyles)(_test_config_json__WEBPACK_IMPORTED_MODULE_1__[\"iframe-settings\"].style);\n    iframeContainer.setAttribute('style', style);\n    mainContainerElement.appendChild(iframeContainer);\n    initialiseMessagePrinter(mainContainerElement);\n    testFlow(iframeContainer);\n}\n\nfunction initialiseMessagePrinter(mainContainerElement) {\n    const messagePrinter = document.createElement('div');\n    messagePrinter.setAttribute('class', 'messagePrinterContainer');\n    const message = document.createElement('p');\n    message.setAttribute('class', 'message-content');\n    messagePrinter.appendChild(message);\n    setMessageContainerStyle(messagePrinter, message)\n    mainContainerElement.appendChild(messagePrinter);\n}\n\nfunction setMessageContainerStyle(messagePrinterContainer, messageContentContainer) {\n    messagePrinterContainer.style.position = 'absolute';\n    messagePrinterContainer.style.width = _test_config_json__WEBPACK_IMPORTED_MODULE_1__[\"iframe-settings\"].style.width;\n    messagePrinterContainer.style.display = 'flex';\n    messagePrinterContainer.style.alignItems = 'center';\n    messagePrinterContainer.style.justifyContent = 'center';\n    messagePrinterContainer.style.top = '0px';\n    messagePrinterContainer.style.outline = 'groove 2px';\n\n    messageContentContainer.style.width = _test_config_json__WEBPACK_IMPORTED_MODULE_1__[\"iframe-settings\"].style.width;\n    messageContentContainer.style.textAlign = 'center';\n}\n\nfunction setMessageEventListener() {\n    window.addEventListener('message', function(event){\n        if (event.data == 'messageFromIframe') {\n            console.log('Message from iFrame received!');\n        } else if (event.data == 'messageToIframe') {\n            console.log('Message to iFrame received!');\n        }\n    });\n}\n\nfunction sendMessageFromIframe() {\n    window.top.postMessage('messageFromIframe', '*');\n}\n\nfunction sendMessageToIframe(iframeContainer) {\n    iframeContainer.contentWindow.postMessage('messageToIframe', '*');\n}\n\nfunction testFlow(iframeContainer) {\n    setMessageEventListener();\n    setTimeout(() => {\n        sendMessageToIframe(iframeContainer);\n        setTimeout(() => { \n            sendMessageFromIframe(iframeContainer) \n        }, 2000);\n    }, 2000);\n}\n\ninit();\n\n//# sourceURL=webpack://iframe-experiments/./src/index.js?");
+
+/***/ }),
+
+/***/ "./src/utils.js":
+/*!**********************!*\
+  !*** ./src/utils.js ***!
+  \**********************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"convertStyles\": () => (/* binding */ convertStyles)\n/* harmony export */ });\nfunction convertStyles(style) {\n    let result = JSON.stringify(style);\n    result = result\n        .replace(/,/gi, ';')\n        .replace('{', '')\n        .replace('}', ';')\n        .replace(/\"/gi, '');\n    return result;\n}\n\n//# sourceURL=webpack://iframe-experiments/./src/utils.js?");
+
+/***/ }),
+
+/***/ "./test/config.json":
+/*!**************************!*\
+  !*** ./test/config.json ***!
+  \**************************/
+/***/ ((module) => {
+
+"use strict";
+eval("module.exports = JSON.parse('{\"iframe-settings\":{\"source\":\"https://www.google.com/search?igu=1\",\"style\":{\"height\":\"700px\",\"width\":\"1000px\"}}}');\n\n//# sourceURL=webpack://iframe-experiments/./test/config.json?");
 
 /***/ })
 
